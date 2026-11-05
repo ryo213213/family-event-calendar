@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#245e50"><meta name="referrer" content="strict-origin-when-cross-origin"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client https://apis.google.com; style-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com; connect-src 'self' https://accounts.google.com https://apis.google.com https://www.googleapis.com https://sheets.googleapis.com https://oauth2.googleapis.com; frame-src https://accounts.google.com https://docs.google.com https://drive.google.com; img-src 'self' https: data:; object-src 'none'; base-uri 'self'; form-action 'self'"><title>こよみ日和 — 家族のイベントカレンダー</title><link rel="icon" href="./favicon.svg"><link rel="stylesheet" href="./style.css"><script type="module" src="./app.js"></script></head><body>
+<a class="skiplink" href="#calendar">カレンダーへ移動</a>
+<aside class="sidebar">
+ <a class="brand" href="./" aria-label="こよみ日和 ホーム"><span class="brand-mark">⌂</span><span>こよみ日和<small>家族の、楽しみをつなぐ。</small></span></a>
+ <div class="family-note"><span class="eyebrow">OUR FAMILY</span><p>大人も、子どもも。<br>次の「行ってみたい」を。</p><small>家族で楽しむ、季節のイベント</small></div>
+ <nav aria-label="表示を選択"><button class="nav-item active" data-view="calendar"><span>▦</span>年間カレンダー</button><button class="nav-item" data-view="want"><span class="red">♡</span>行きたい<span id="want-count" class="nav-count">0</span></button><button class="nav-item" data-view="favorites"><span class="gold">☆</span>毎年お気に入り</button><button class="nav-item" data-view="attended"><span>✓</span>参加した記録</button></nav>
+ <div class="sidebar-bottom"><div class="legend-title">カレンダーの見方</div><p><span class="red">♥</span> 今回、行きたい</p><p><span class="gold">★</span> 毎年楽しみにしたい</p><p><span class="tentative-label">仮</span> 前年実績・日程未確定</p><button id="settings-open" class="connection-button">⚙ データ接続・表示設定</button><small>家族で選ぶ、ちょうどいい休日。</small></div>
+</aside>
+<main>
+ <header class="topbar"><div><span class="eyebrow">FAMILY EVENT CALENDAR</span><h1 id="page-title">一年の楽しみを、見つけよう。</h1></div><span id="mode-badge" class="mode-badge">● デモデータ</span></header>
+ <div class="demo-notice" id="demo-notice"><strong>DEMO</strong> すべて架空のイベントです。♥・★を押して、家族のカレンダーをお試しください。</div>
+ <section class="toolbar" aria-label="カレンダー操作"><div class="year-control"><button id="year-prev" aria-label="前年">‹</button><select id="year" aria-label="表示年"></select><button id="year-next" aria-label="翌年">›</button></div><button id="today" class="quiet-button">今月へ</button><div class="search"><span>⌕</span><input id="search" type="search" placeholder="イベントや場所を検索" aria-label="イベントや場所を検索"></div><select id="category" aria-label="ジャンル"><option value="">すべてのジャンル</option></select><button id="refresh" class="quiet-button">↻ 更新</button></section>
+ <section class="year-overview"><div class="section-label"><h2>一年の見どころ</h2><span>日ごとの候補数を、色の濃さで表示</span></div><div id="overview" class="overview"></div><div class="density-legend"><span>少ない</span><i class="density-0"></i><i class="density-1"></i><i class="density-2"></i><i class="density-3"></i><i class="density-4"></i><span>多い</span><span class="overview-footnote">参加可能な全候補が対象（55点未満・満員・中止を除く）</span></div></section>
+ <div id="quicknav" class="quicknav" aria-label="月へのクイック移動"></div>
+ <div class="content-heading"><div><span class="eyebrow" id="content-eyebrow">YOUR YEAR, AT A GLANCE</span><h2 id="content-title">年間カレンダー</h2></div><span id="result-count"></span></div>
+ <div id="error" class="error" role="alert" hidden></div><div id="loading" role="status">カレンダーを読み込んでいます…</div>
+ <div id="calendar" tabindex="-1"></div><section id="list-view" hidden></section>
+ <footer>こよみ日和 <span>·</span> 確認できていない情報は「未確認」と表示しています。<span id="updated"></span><br><a href="./privacy.html">プライバシー</a> · <a href="./terms.html">利用条件</a></footer>
+</main>
+<div id="sheet-backdrop" class="backdrop" hidden></div><aside id="day-panel" class="day-panel" aria-label="日別イベント" hidden></aside>
+<dialog id="detail"><div id="detail-content"></div></dialog>
+<dialog id="settings"><div class="dialog-heading"><h2>データ接続・表示設定</h2><button data-close="settings" aria-label="閉じる">×</button></div><p class="muted" id="storage-note">デモの選択状態を保存します。</p><label class="setting-row"><span>データソース</span><select id="source"><option value="demo">デモデータ</option><option value="sheets">既存のGoogle Sheets</option></select></label><div class="connection-info" id="connection-info"></div><label class="setting-row"><span>ルート検索の出発地点<br><small>この端末だけに保存</small></span><input id="route-origin" type="text" maxlength="200" placeholder="任意：市区町村・駅名など" autocomplete="off"></label><label class="setting-row"><span>見送りした候補も表示</span><input type="checkbox" id="show-skipped"></label><label class="setting-row"><span>仮日程を表示</span><input type="checkbox" id="show-tentative" checked></label><p class="muted">♥は開催回ごと、★はイベント共通です。Sheetsモードでは既存PoC行を除外し、デモデータは書き込みません。</p><button data-close="settings" class="primary">完了</button></dialog>
+<div id="toast" role="status" class="toast" hidden></div>
+</body></html>
+
