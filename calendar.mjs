@@ -12,7 +12,7 @@ export function normalize(data) {
   const unique = (rows,key) => [...new Map((rows || []).filter(x=>x[key]).map(x=>[x[key],x])).values()];
   const actions=new Map();
   for(const action of data.userActions||[]){if(!action.occurrence_id)continue;const previous=actions.get(action.occurrence_id)||{};for(const [key,value] of Object.entries(action))if(value!==''&&value!=null)previous[key]=value;actions.set(action.occurrence_id,previous);}
-  return {events:unique(data.events,'event_id').filter(e=>!isPoc(e)).map(e=>({...e,annual_favorite:bool(e.annual_favorite)})), occurrences:unique(data.occurrences,'occurrence_id'), userActions:[...actions.values()].map(a=>({...a,want_to_go:bool(a.want_to_go),skip:bool(a.skip),attended:bool(a.attended)})), sources:data.sources||[], organizers:data.organizers||[]};
+  return {events:unique(data.events,'event_id').filter(e=>!isPoc(e)).map(e=>({...e,annual_favorite:bool(e.annual_favorite),not_interested:bool(e.not_interested)})), occurrences:unique(data.occurrences,'occurrence_id'), userActions:[...actions.values()].map(a=>({...a,want_to_go:bool(a.want_to_go),skip:bool(a.skip),attended:bool(a.attended)})), sources:data.sources||[], organizers:data.organizers||[]};
 }
 export function yearItems(data, year) {
   const result = [], masters = new Map(data.events.map(e=>[e.event_id,e])), actions = new Map(data.userActions.map(a=>[a.occurrence_id,a]));
@@ -31,8 +31,8 @@ export function yearItems(data, year) {
   }
   return result;
 }
-export function eligible(item,{showSkipped=false,category='',query='',onlyWant=false,onlyFavorite=false,onlyAttended=false,showTentative=true}={}) {
-  return !['cancelled','full','ineligible'].includes(item.status||item.availability) && !['cancelled','full','ineligible'].includes(item.date_status) && !['cancelled','full','ineligible'].includes(item.availability) && (showSkipped||!item.action.skip) && (showTentative||item.date_status==='confirmed') && (!category||item.category===category) && (!query||`${item.event_name} ${item.venue||''} ${item.rationale||''}`.toLowerCase().includes(query.toLowerCase())) && (!onlyWant||item.action.want_to_go) && (!onlyFavorite||item.annual_favorite) && (!onlyAttended||item.action.attended) && (item.score===''||item.score==null||Number(item.score)>=55);
+export function eligible(item,{category='',query='',onlyWant=false,onlyFavorite=false,onlyAttended=false,showTentative=true}={}) {
+  return !['cancelled','full','ineligible'].includes(item.status||item.availability) && !['cancelled','full','ineligible'].includes(item.date_status) && !['cancelled','full','ineligible'].includes(item.availability) && !bool(item.not_interested) && (showTentative||item.date_status==='confirmed') && (!category||item.category===category) && (!query||`${item.event_name} ${item.venue||''} ${item.rationale||''}`.toLowerCase().includes(query.toLowerCase())) && (!onlyWant||item.action.want_to_go) && (!onlyFavorite||item.annual_favorite) && (!onlyAttended||item.action.attended) && (item.score===''||item.score==null||Number(item.score)>=55);
 }
 export function rank(items) {return [...items].sort((a,b)=>Number(b.annual_favorite)-Number(a.annual_favorite)||Number(b.score||0)-Number(a.score||0)||a.event_name.localeCompare(b.event_name,'ja'));}
 export function cellSummary(items) {
