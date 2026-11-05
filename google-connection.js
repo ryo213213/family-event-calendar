@@ -1,4 +1,4 @@
-import {connectGoogle,disconnectGoogle} from './browser-api.js';
+import {connectGoogle,disconnectGoogle} from './browser-api.js?v=975ec59d88f0';
 let config,onConnected,client,ready=false;
 function loadScript(src){return new Promise((resolve,reject)=>{const old=document.querySelector(`script[src="${src}"]`);if(old){if(old.dataset.loaded)return resolve();old.addEventListener('load',resolve,{once:true});old.addEventListener('error',reject,{once:true});return;}const el=document.createElement('script');el.src=src;el.async=true;el.onload=()=>{el.dataset.loaded='true';resolve();};el.onerror=()=>{el.remove();reject(new Error('Googleの接続画面を読み込めませんでした。'));};document.head.append(el);});}
 export function configureGoogle(status,callback){config=status.google;onConnected=callback;ready=false;}

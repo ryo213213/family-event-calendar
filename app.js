@@ -1,6 +1,6 @@
-import {normalize,yearItems,eligible,dayMap,cellSummary,rank,iso,bool} from './calendar.mjs';
-import {configureGoogle,connectionMarkup} from './google-connection.js';
-import {apiFetch} from './browser-api.js';
+import {normalize,yearItems,eligible,dayMap,cellSummary,rank,iso,bool} from './calendar.mjs?v=975ec59d88f0';
+import {configureGoogle,connectionMarkup} from './google-connection.js?v=975ec59d88f0';
+import {apiFetch} from './browser-api.js?v=975ec59d88f0';
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const now=new Date(), today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo'}).format(now);
 let year=Number(today.slice(0,4)), month=Number(today.slice(5,7)), data={events:[],occurrences:[],userActions:[]}, mode=localStorage.getItem('calendar-mode')||'demo', view='calendar', selectedDate=null, detailId=null, configured=false, loading=false, pending=new Set(), focusBeforePanel=null;

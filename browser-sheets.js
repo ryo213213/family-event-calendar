@@ -1,4 +1,4 @@
-import {normalize,tableObjects,bool,yearItems,isPoc} from './calendar.mjs';
+import {normalize,tableObjects,bool,yearItems,isPoc} from './calendar.mjs?v=975ec59d88f0';
 const names=['Events','Occurrences','UserActions','Sources','Organizers'];
 const headers={Events:['event_id','event_name','category','organizer','annual_favorite','last_verified'],Occurrences:['occurrence_id','event_id','year','start_date','date_status','source_url','availability'],UserActions:['event_id','occurrence_id','want_to_go','skip','attended','rating']};
 export class BrowserSheets {

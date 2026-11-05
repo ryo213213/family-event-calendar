@@ -1,7 +1,7 @@
-import {createDemo} from './demo.mjs';
-import {normalize,yearItems} from './calendar.mjs';
-import {BrowserSheets,validChange} from './browser-sheets.js';
-import {googleConfig} from './site-config.js';
+import {createDemo} from './demo.mjs?v=975ec59d88f0';
+import {normalize,yearItems} from './calendar.mjs?v=975ec59d88f0';
+import {BrowserSheets,validChange} from './browser-sheets.js?v=975ec59d88f0';
+import {googleConfig} from './site-config.js?v=975ec59d88f0';
 let accessToken='',expires=0,sheetId='',store=null,queue=Promise.resolve();
 const completed=new Map();
 const DEMO_KEY='koyomi-demo-v3';
